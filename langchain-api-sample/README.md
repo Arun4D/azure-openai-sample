@@ -1,5 +1,14 @@
 # langchain-api-sample
 
+## Overview
+langchain-api-sample to auto generate the test scenarios for behavior driven development (BDD). Simple example like “test login with username and password".
+
+ChatPromptTemplate set the prompt to get the business case and generate the following code
+1. feature file
+2. Step Definitions java class
+3. Config java class
+
+
 ## Installation
 
 Install the LangChain CLI if you haven't yet
