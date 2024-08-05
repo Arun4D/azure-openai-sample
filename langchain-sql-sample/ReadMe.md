@@ -7,11 +7,24 @@ Build sample notebook to check the following
 
 ## Install
 
+1. Install ollama
+
 ```bash
-ollama run tinyllama:1.1b   
+ollama run llama3.1 #tinyllama:1.1b   
 
 ```
+2. Activate the virtual environment
 
+````bash
+python -m venv venv
+source venv/bin/activate
+````
+
+3. Packages
+
+````bash
+py -m pip install langchain langchain-community
+````
 ## Reference Links
 
 
