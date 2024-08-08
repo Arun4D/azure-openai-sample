@@ -5,7 +5,11 @@ from fastapi import FastAPI
 from langchain_openai import AzureChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langserve import add_routes
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Optional
+from langchain_core.output_parsers import JsonOutputParser
+from langchain.output_parsers import PydanticOutputParser
+from langchain_core.prompts import PromptTemplate
 
 class TestScenario(BaseModel):
     text: str
@@ -15,6 +19,25 @@ class GeneratedTestResult(BaseModel):
     stepConfig: str
     stepDefinitions: str
     rawData: str
+
+class UserDetailsRawRequest(BaseModel):
+    text: str
+
+class UserDetailsRawResponse(BaseModel):
+    text: str
+
+class AddressDetail(BaseModel):
+    line1: Optional[str] = None
+    line2: Optional[str] = None
+    city: Optional[str] = None
+    district: Optional[str] = None
+    state: Optional[str] = None
+    pin_code: Optional[str] = None
+class UserDetails(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone_number: Optional[str] = None
+    address: Optional[AddressDetail] = Field(default=None, description="Address details")
 
 # Step 3: Extract code snippets
 def extract_code_snippets(response_text):
@@ -117,6 +140,25 @@ async def create_test_scenario(testScenario: TestScenario):
     generatedTestResult = GeneratedTestResult(**responseData)
 
     return generatedTestResult
+
+
+#parser = JsonOutputParser()
+parser = PydanticOutputParser(pydantic_object=UserDetails)
+
+prompt1 = PromptTemplate(
+    template="Convert the user text to json.\n{format_instructions}\n Text '{query}' to json and fields are address  with line1, line2 , city, district , state and pin code. signature contain firstname, lastname, phonenumber,\n",
+    input_variables=["query"],
+    partial_variables={"format_instructions": parser.get_format_instructions()},
+)
+
+chain1 = prompt1 | model | parser
+
+
+@app.post("/userdetails/", status_code=201)
+async def create_test_scenario(userDetailsRaw: UserDetailsRawRequest):
+    response = chain1.invoke(userDetailsRaw.text)
+    
+    return response
 
 
 if __name__ == "__main__":
