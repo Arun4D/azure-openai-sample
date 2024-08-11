@@ -1,0 +1,1 @@
+Convert Text "{{$query}}" to json and fields are address  with line1, line2 , city, district , state and pin code. signature contain firstname, lastname and phonenumber. JSON Result.
