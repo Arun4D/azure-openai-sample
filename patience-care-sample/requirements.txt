@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+tika
+pytesseract
+pillow
+sentence-transformers
+faiss-cpu
+transformers
