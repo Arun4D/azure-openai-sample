@@ -1,0 +1,3 @@
+langchain>=0.1.13
+langchain_community
+pyodbc
